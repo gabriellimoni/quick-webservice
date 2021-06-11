@@ -4,14 +4,14 @@ const parseJsonOnRequestBody = require("./parseJsonOnRequestBody");
 const resolveRoute = require("./resolveRoute");
 
 module.exports = {
-  build() {
+  build(params = { parseJson: true, timeout: 10000 }) {
     const routes = [];
 
     const handleRequest = async (req, res) => {
       const url = req.url;
       const method = req.method.toLowerCase();
       const currentRoute = resolveRoute(url, routes);
-      await parseJsonOnRequestBody(req);
+      if (params.parseJson) await parseJsonOnRequestBody(req);
 
       if (!currentRoute) {
         res.writeHead(404);
@@ -28,7 +28,7 @@ module.exports = {
     };
 
     const server = http.createServer(handleRequest);
-    server.setTimeout(1000);
+    server.setTimeout(params.timeout);
 
     return {
       get(path, ...funcs) {
