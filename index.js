@@ -1,6 +1,6 @@
 const http = require("http");
-const getDataFromRequest = require("./getDataFromRequest");
 const handleRequestChain = require("./handleRequestChain");
+const parseJsonOnRequestBody = require("./parseJsonOnRequestBody");
 const resolveRoute = require("./resolveRoute");
 
 module.exports = {
@@ -11,16 +11,7 @@ module.exports = {
       const url = req.url;
       const method = req.method.toLowerCase();
       const currentRoute = resolveRoute(url, routes);
-
-      let data = await getDataFromRequest(req);
-      if (typeof data === "string") {
-        try {
-          const jsonData = JSON.parse(data);
-          req.body = jsonData;
-        } catch (error) {
-          req.body = data;
-        }
-      }
+      await parseJsonOnRequestBody(req);
 
       if (!currentRoute) {
         res.writeHead(404);
