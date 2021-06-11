@@ -1,4 +1,5 @@
 const http = require("http");
+const handleRequestChain = require("./handleRequestChain");
 const resolveRoute = require("./resolveRoute");
 
 module.exports = {
@@ -24,28 +25,6 @@ module.exports = {
       req.params = currentRoute.params;
 
       await handleRequestChain(req, res, currentRoute.chain);
-    };
-
-    const handleRequestChain = async (req, res, funcs) => {
-      let currentResponse = null;
-      for (let i = 0; i < funcs.length; i++) {
-        const currentFunc = funcs[i];
-        currentResponse = await currentFunc(req, res);
-        if (res.finished) break;
-      }
-      if (!currentResponse) {
-        res.writeHead(200);
-        return res.end();
-      }
-      res.writeHead(currentResponse.status ? currentResponse.status : 200);
-      res.write(
-        currentResponse.data
-          ? currentResponse.data
-          : currentResponse
-          ? currentResponse
-          : ""
-      );
-      res.end();
     };
 
     const server = http.createServer(handleRequest);
