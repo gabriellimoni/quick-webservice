@@ -94,6 +94,17 @@ describe("GET routes", () => {
     expect(response.status).toBe(404);
     expect(response.text).toBe("Cannot POST /");
   });
+
+  test("Should return json object if json sent on data", async () => {
+    quickWebservice.get("/", () => {
+      return { status: 200, data: { some: "json" } };
+    });
+    quickWebservice.listen(3000);
+
+    const response = await request(quickWebservice.server).get("/");
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ some: "json" });
+  });
 });
 
 /*

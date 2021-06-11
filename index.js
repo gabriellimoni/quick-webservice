@@ -21,13 +21,12 @@ module.exports = {
         res.write(`Cannot ${method.toUpperCase()} ${url}`);
         return res.end();
       }
-
       req.params = currentRoute.params;
-
       await handleRequestChain(req, res, currentRoute.chain);
     };
 
     const server = http.createServer(handleRequest);
+    server.setTimeout(1000);
 
     return {
       get(path, ...funcs) {

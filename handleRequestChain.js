@@ -9,13 +9,27 @@ module.exports = async function (req, res, funcs) {
     res.writeHead(200);
     return res.end();
   }
-  res.writeHead(currentResponse.status ? currentResponse.status : 200);
-  res.write(
-    currentResponse.data
-      ? currentResponse.data
-      : currentResponse
-      ? currentResponse
-      : ""
-  );
-  res.end();
+  handleResponse(currentResponse, req, res);
 };
+
+function handleResponse(currentResponse, req, res) {
+  if (res.finished) return;
+  if (currentResponse && currentResponse.status) {
+    res.writeHead(currentResponse.status);
+  } else {
+    res.writeHead(200);
+  }
+
+  if (currentResponse && typeof currentResponse === "string") {
+    res.write(currentResponse);
+  } else if (currentResponse && currentResponse.data) {
+    if (typeof currentResponse.data === "string") {
+      res.write(currentResponse.data);
+    } else if (typeof currentResponse.data === "object") {
+      res.writeHead(res.statusCode, { "Content-Type": "application/json" });
+      res.write(JSON.stringify(currentResponse.data));
+    }
+  }
+
+  res.end();
+}
