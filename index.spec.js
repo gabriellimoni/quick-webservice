@@ -83,6 +83,17 @@ describe("GET routes", () => {
     expect(response.status).toBe(404);
     expect(response.text).toBe("Not found path /not-existent-route");
   });
+
+  test("Should return 404 if method not allowed", async () => {
+    quickWebservice.get("/", () => {
+      return;
+    });
+    quickWebservice.listen(3000);
+
+    const response = await request(quickWebservice.server).post("/");
+    expect(response.status).toBe(404);
+    expect(response.text).toBe("Cannot POST /");
+  });
 });
 
 /*

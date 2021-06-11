@@ -12,13 +12,12 @@ module.exports = {
 
       if (!currentRoute) {
         res.writeHead(404);
-        res.write("Not found path ");
-        res.write(url);
+        res.write(`Not found path ${url}`);
         return res.end();
       }
       if (method !== currentRoute.method) {
-        res.write(`Cannot ${method.toUpperCase()} `);
-        res.write(url);
+        res.writeHead(404);
+        res.write(`Cannot ${method.toUpperCase()} ${url}`);
         return res.end();
       }
 
