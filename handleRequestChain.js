@@ -22,6 +22,13 @@ function handleResponse(currentResponse, req, res) {
 
   if (currentResponse && typeof currentResponse === "string") {
     res.write(currentResponse);
+  } else if (
+    currentResponse &&
+    !currentResponse.status &&
+    typeof currentResponse === "object"
+  ) {
+    res.writeHead(res.statusCode, { "Content-Type": "application/json" });
+    res.write(JSON.stringify(currentResponse));
   } else if (currentResponse && currentResponse.data) {
     if (typeof currentResponse.data === "string") {
       res.write(currentResponse.data);

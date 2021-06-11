@@ -105,4 +105,15 @@ describe("GET routes", () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ some: "json" });
   });
+
+  test("Should return json object if json return", async () => {
+    quickWebservice.get("/", () => {
+      return { some: "json" };
+    });
+    quickWebservice.listen(3000);
+
+    const response = await request(quickWebservice.server).get("/");
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ some: "json" });
+  });
 });
