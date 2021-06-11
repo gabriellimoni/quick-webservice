@@ -1,4 +1,5 @@
 const http = require("http");
+const getDataFromRequest = require("./getDataFromRequest");
 const handleRequestChain = require("./handleRequestChain");
 const resolveRoute = require("./resolveRoute");
 
@@ -10,6 +11,16 @@ module.exports = {
       const url = req.url;
       const method = req.method.toLowerCase();
       const currentRoute = resolveRoute(url, routes);
+
+      let data = await getDataFromRequest(req);
+      if (typeof data === "string") {
+        try {
+          const jsonData = JSON.parse(data);
+          req.body = jsonData;
+        } catch (error) {
+          req.body = data;
+        }
+      }
 
       if (!currentRoute) {
         res.writeHead(404);
@@ -33,6 +44,13 @@ module.exports = {
         routes.push({
           path: path,
           method: "get",
+          chain: funcs,
+        });
+      },
+      post(path, ...funcs) {
+        routes.push({
+          path: path,
+          method: "post",
           chain: funcs,
         });
       },

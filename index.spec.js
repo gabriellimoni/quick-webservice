@@ -117,3 +117,42 @@ describe("GET routes", () => {
     expect(response.body).toEqual({ some: "json" });
   });
 });
+
+describe("POST routes", () => {
+  test("Should return 200", async () => {
+    quickWebservice.post("/", () => {
+      return "body-response";
+    });
+    quickWebservice.listen(3000);
+
+    const response = await request(quickWebservice.server).post("/");
+    expect(response.status).toBe(200);
+    expect(response.text).toBe("body-response");
+  });
+
+  test("Should parse json data on request body params", async () => {
+    quickWebservice.post("/", (req) => {
+      return req.body;
+    });
+    quickWebservice.listen(3000);
+
+    const response = await request(quickWebservice.server).post("/").send({
+      my: "data",
+    });
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ my: "data" });
+  });
+
+  test("Should not json data on request body params", async () => {
+    quickWebservice.post("/", (req) => {
+      return req.body;
+    });
+    quickWebservice.listen(3000);
+
+    const response = await request(quickWebservice.server)
+      .post("/")
+      .send("my-data");
+    expect(response.status).toBe(200);
+    expect(response.text).toBe("my-data");
+  });
+});
