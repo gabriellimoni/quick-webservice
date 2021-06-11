@@ -1,4 +1,5 @@
 const http = require("http");
+const getPathBlocksBySlash = require("./getPathBlocksBySlash");
 
 module.exports = {
   build() {
@@ -10,6 +11,7 @@ module.exports = {
       const currentRoute = resolveRoute(url);
 
       if (!currentRoute) {
+        res.writeHead(404);
         res.write("Not found path ");
         res.write(url);
         return res.end();
@@ -36,7 +38,7 @@ module.exports = {
       }
 
       const whichIndexHasParamsSeekUrl = [];
-      const seekUrlpPathBlocks = url.split("/");
+      const seekUrlpPathBlocks = getPathBlocksBySlash(url);
       for (let i = 0; i < seekUrlpPathBlocks.length; i++) {
         const thisPathBlock = seekUrlpPathBlocks[i];
         if (thisPathBlock.charAt(0) === ":") {
@@ -45,7 +47,7 @@ module.exports = {
       }
       for (const route of routes) {
         let match = true;
-        const pathBlocks = route.path.split("/");
+        const pathBlocks = getPathBlocksBySlash(route.path);
 
         if (pathBlocks.length !== seekUrlpPathBlocks.length) continue;
 

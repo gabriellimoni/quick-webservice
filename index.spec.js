@@ -70,6 +70,19 @@ describe("GET routes", () => {
     );
     expect(response.text).toBe("firstParam-secondParam-thirdParam");
   });
+
+  test("Should return 404 if url not found", async () => {
+    quickWebservice.get("/", () => {
+      return;
+    });
+    quickWebservice.listen(3000);
+
+    const response = await request(quickWebservice.server).get(
+      "/not-existent-route"
+    );
+    expect(response.status).toBe(404);
+    expect(response.text).toBe("Not found path /not-existent-route");
+  });
 });
 
 /*
