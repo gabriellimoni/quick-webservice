@@ -1,0 +1,21 @@
+{
+  "name": "quick-webservice",
+  "version": "0.0.1",
+  "description": "Quick node webservice (just like Express)",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --run-in-band",
+    "dev": "nodemon index.spec.js"
+  },
+  "keywords": [
+    "webservice",
+    "node"
+  ],
+  "author": "Gabriel Limoni",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^27.0.4",
+    "nodemon": "^2.0.7",
+    "supertest": "^6.1.3"
+  }
+}
