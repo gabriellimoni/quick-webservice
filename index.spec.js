@@ -106,26 +106,3 @@ describe("GET routes", () => {
     expect(response.body).toEqual({ some: "json" });
   });
 });
-
-/*
-const QuickWebservice = require("./index");
-const quickWebservice = QuickWebservice.build();
-
-quickWebservice.get("/", () => {
-  return "FOI";
-});
-quickWebservice.get("/teste", () => {
-  return { status: 200, data: "FOI TESTE" };
-});
-quickWebservice.get("/teste/:id", () => {
-  return { status: 200, data: "FOI TESTE ID" };
-});
-quickWebservice.get("/teste/:id/:teste/gabriel/:carai", ({ params }) => {
-  console.log(params);
-  return { status: 200, data: "FOI TESTE TESTEEEE" };
-});
-
-quickWebservice.listen(3000, function () {
-  console.log("Listening on 3000");
-});
-*/
