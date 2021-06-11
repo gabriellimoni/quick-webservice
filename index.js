@@ -1,5 +1,5 @@
 const http = require("http");
-const getPathBlocksBySlash = require("./getPathBlocksBySlash");
+const resolveRoute = require("./resolveRoute");
 
 module.exports = {
   build() {
@@ -8,7 +8,7 @@ module.exports = {
     const handleRequest = async (req, res) => {
       const url = req.url;
       const method = req.method.toLowerCase();
-      const currentRoute = resolveRoute(url);
+      const currentRoute = resolveRoute(url, routes);
 
       if (!currentRoute) {
         res.writeHead(404);
@@ -24,57 +24,6 @@ module.exports = {
       req.params = currentRoute.params;
 
       await handleRequestChain(req, res, currentRoute.chain);
-    };
-
-    const resolveRoute = (url) => {
-      const simpleRoute = routes.find(
-        (route) => route.path.toLowerCase() === url.toLowerCase()
-      );
-      if (simpleRoute) return simpleRoute;
-
-      if (url.charAt(url.length - 1) === "/") {
-        url = url.slice(0, url.length - 1);
-      }
-
-      const whichIndexHasParamsSeekUrl = [];
-      const seekUrlpPathBlocks = getPathBlocksBySlash(url);
-      for (let i = 0; i < seekUrlpPathBlocks.length; i++) {
-        const thisPathBlock = seekUrlpPathBlocks[i];
-        if (thisPathBlock.charAt(0) === ":") {
-          whichIndexHasParamsSeekUrl.push(i);
-        }
-      }
-      for (const route of routes) {
-        let match = true;
-        const pathBlocks = getPathBlocksBySlash(route.path);
-
-        if (pathBlocks.length !== seekUrlpPathBlocks.length) continue;
-
-        const whichIndexHasParams = [];
-        for (let i = 0; i < pathBlocks.length; i++) {
-          const thisPathBlock = pathBlocks[i];
-          if (thisPathBlock.charAt(0) === ":") {
-            whichIndexHasParams.push(i);
-          }
-        }
-        for (let i = 0; i < whichIndexHasParamsSeekUrl.length; i++) {
-          if (whichIndexHasParamsSeekUrl[i] !== whichIndexHasParams[i]) {
-            match = false;
-          }
-        }
-        if (match) {
-          const params = {};
-          whichIndexHasParams.forEach((indexWithParam) => {
-            params[pathBlocks[indexWithParam].slice(1)] =
-              seekUrlpPathBlocks[indexWithParam];
-          });
-          return {
-            ...route,
-            params,
-          };
-        }
-      }
-      return undefined;
     };
 
     const handleRequestChain = async (req, res, funcs) => {
