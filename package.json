@@ -4,8 +4,7 @@
   "description": "Quick node webservice (just like Express)",
   "main": "index.js",
   "scripts": {
-    "test": "jest --run-in-band",
-    "dev": "nodemon index.spec.js"
+    "test": "jest --run-in-band"
   },
   "keywords": [
     "webservice",
